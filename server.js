@@ -4,13 +4,17 @@ var express = require('express'),
     routes = require('./app/routes/index.js'),
     mongoose = require('mongoose'),
     passport = require('passport'),
-    session = require('express-session');
+    session = require('express-session'),
+    bodyParser = require('body-parser');
 
 var app = express();
 require('dotenv').load();
 require('./app/config/passport')(passport);
 
 mongoose.connect(process.env.MONGO_URI);
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
 app.use('/public', express.static(process.cwd() + '/public'));
