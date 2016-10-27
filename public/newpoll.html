@@ -40,23 +40,58 @@
         <p class="vote-app">Vote app</p>
 
 
+        <div class="row">
+          <div class="col-xs-1 col-md-1 col-sm-1 col-lg-1">
+          </div>
+          <div class="col-xs-10 col-md-10 col-sm-10 col-lg-10">
 
+            <div id="divnewpoll">
+              <label >New Poll:</label>
+              <input type="text" id="createpoll" placeholder="Enter a new poll">
+              <br>
+              <label >Option:</label>
+              <input type="text" id="optional1" placeholder="Enter a optional">
+              <br>
+              <label >Option:</label>
+              <input type="text" id="optional2" placeholder="Enter a optional">
+              <br>
+              <label></label>
+              <span id="add"></span>
+              <button onclick="more()" id="more-optional"><span class="glyphicon glyphicon-plus"></span>More</button>
 
+          </div>
 
+          </div>
+          <div class="col-xs-1 col-md-1 col-sm-1 col-lg-1">
+          </div>
+        </div>
 
       </div>
+<!-- script them option -->
+<script>
+  var id=3;
+  $.fn.changid = function() {
+    return this.each(function(){
+      var new_id = 'optional'+id;
+      $(this).attr('id',new_id);
+    });
+  };
 
 
+  function more(){
+    var label="<label>Option: </label>";
+    var input="<input type=text id=optional3 placeholder=Enter a optional>";
+    $("#optional3").changid();
+    $("#add").append(label);
+    $("#add").append(input);
+    $("#add").append("<br>");
+    id++;
 
+  }
+</script>
 
-
-
-
-
-\
-        <script type="text/javascript" src="common/ajax-functions.js"></script>
-        <script type="text/javascript" src="controllers/clickControllers.client.js"></script>
-        <script type="text/javascript" src="controllers/userController.client.js"></script>
-    </body>
+<script type="text/javascript" src="common/ajax-functions.js"></script>
+<script type="text/javascript" src="controllers/clickControllers.client.js"></script>
+<script type="text/javascript" src="controllers/userController.client.js"></script>
 
 </html>

@@ -36,6 +36,9 @@ module.exports = function (app, passport) {
         res.sendFile(path+'/public/newpoll.html');
       })
 
+
+
+
     app.route('/profile')
         .get(isLoggedIn, function (req, res) {
             res.sendFile(path + '/public/profile.html');
@@ -44,6 +47,7 @@ module.exports = function (app, passport) {
     app.route('/api/:id')
         .get(isLoggedIn, function (req, res) {
             res.json(req.user.github);
+            //console.log(req.user.id);
         });
 
     app.route('/auth/github')
