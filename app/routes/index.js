@@ -1,9 +1,9 @@
 'use strict';
+var Poll=require('../models/polls');
 
 var path = process.cwd();
 var ClickHandler = require(path + '/app/controllers/clickHandler.server.js');
-var SubmitHandler=require(path+'/app/controllers/submitHandler.server.js');
-
+var savepoll=require(path+'/app/controllers/savePoll.server.js');
 module.exports = function (app, passport) {
 
     function isLoggedIn (req, res, next) {
@@ -15,11 +15,29 @@ module.exports = function (app, passport) {
     }
 
     var clickHandler = new ClickHandler();
-    var submitHandler=new SubmitHandler();
+
+    var savePoll=new savepoll();
     app.route('/')
         .get(isLoggedIn, function (req, res) {
-            res.sendFile(path + '/public/index.html');
+            res.sendFile(path + '/public/index.html')
         })
+        .post(isLoggedIn,function(req,res){
+          var poll=new Poll(req.body);
+          poll.question=req.body.question;
+          for(var i=0;i<req.body.optional.length;++i){
+            poll.choices[i]={
+              text:req.body.optional[i],
+              votes:0
+            };
+          }
+
+          console.log(req.body.optional.length);
+          poll.save(function(err){
+            if(err) throw err;
+          })
+          //res.send(req.body);
+          res.sendFile(path + '/public/index.html')
+        });
 
 
     app.route('/login')
@@ -35,18 +53,15 @@ module.exports = function (app, passport) {
 
     app.route('/newpoll')
       .get(isLoggedIn,function(req,res){
-        res.sendFile(path+'/public/newpoll.html');
+        res.sendFile(path+'/public/newpoll.html')
       })
-
-
-
 
     app.route('/profile')
         .get(isLoggedIn, function (req, res) {
             res.sendFile(path + '/public/profile.html');
         });
 
-    app.route('/api/:id')
+    app.route('/api/:id/userGithub')
         .get(isLoggedIn, function (req, res) {
             res.json(req.user.github);
             //console.log(req.user.id);
@@ -61,15 +76,12 @@ module.exports = function (app, passport) {
             failureRedirect: '/login'
         }));
 
-    app.route('/api/:id/clicks')
-        .get(isLoggedIn, clickHandler.getClicks)
-        .post(isLoggedIn, clickHandler.addClick)
-        .delete(isLoggedIn, clickHandler.resetClicks);
 
     app.route('/api/polls')
-      .get(isLoggedIn);
+      .get(isLoggedIn,clickHandler.auto);
 
     app.route('/api/user/poll')
+      .get(isLoggedIn,savePoll.save)
       .post(isLoggedIn,function(req,res){
         res.send(req.body);
       })
